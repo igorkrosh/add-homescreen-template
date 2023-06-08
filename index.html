@@ -2,27 +2,46 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" >
-    <meta name="apple-mobile-web-app-title" content="Add Homescreen Test" >
-    <link rel="stylesheet" href="/css/addtohomescreen.css">
-    <script src="/js/addtohomescreen.min.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
     <title>Document</title>
 </head>
 <body>
     <h1>Add Homescreen Test</h1>
-
+    <button id="install">Install App</button>
     <script>
-        if (('standalone' in window.navigator) && !window.navigator.standalone || !window.matchMedia("(display-mode: 'standalone')").matches)
-        {
-            addToHomescreen();
-        }
+        var deferredPrompt;
+        let btnInstall = document.getElementById('install');
+
+        btnInstall.style.display = 'none';
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log(`'beforeinstallprompt' event was fired.`);
+
+            btnInstall.style.display = 'block';
+
+
+        });
+
+        btnInstall.addEventListener('click', async (e) => {
+            btnInstall.style.display = 'none';
+            deferredPrompt.prompt()
+
+            const { outcome } = await deferredPrompt.userChoice;
+
+            console.log(`User response to the install prompt: ${outcome}`);
+
+            deferredPrompt = null;
+        })
     </script>
 </body>
 </html>
